@@ -19,16 +19,19 @@ describe Interest::Simple do
 	end
   end
 
-  describe '#calc_principal' do
+  describe 'principal calcs' do
   	before do
 	  @interest.total_sum   = 5000
 	  @interest.annual_rate = 5
 	  @interest.term        = 1
-	  @interest.calc_principal
   	end
 
-    it 'returns 4761.90' do
-      @interest.principal.must_equal 4761.90
+    describe '#calc_principal' do
+      before { @interest.calc_principal }
+
+      it 'returns 4761.90' do
+        @interest.principal.must_equal 4761.90
+      end
     end
   end
 end
