@@ -1,4 +1,4 @@
-# Real Estate Math
+# Real Estate Mate
 
 Notes & Ruby formulas for calculating:
 
