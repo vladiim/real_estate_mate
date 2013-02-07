@@ -7,16 +7,26 @@ describe Interest::Simple do
   end
 
   describe '#calc_total_interest' do
-	before do
-	  @interest.principal   = 1750
-	  @interest.annual_rate = 4.5
-	  @interest.term        = 0.36
-	  @interest.calc_total_interest
-	end
+    describe 'with total interest variables' do
+	    before do
+	      @interest.principal   = 1750
+	      @interest.annual_rate = 4.5
+	      @interest.term        = 0.36
+	      @interest.calc_total_interest
+	    end
 	    
-	it 'returns 28.35' do
-	  @interest.total_interest.must_equal 28.35
-	end
+	    it 'returns 28.35' do
+	      @interest.total_interest.must_equal 28.35
+	    end
+    end
+
+    describe 'without total interest variables' do
+      let(:error) { Interest::Simple::NeedTotalInterestError }
+
+      it 'should raise a NeedTotalInterestError' do
+        lambda {@interest.calc_total_interest}.must_raise error
+      end
+    end
   end
 
   describe 'principal calcs' do

@@ -1,20 +1,25 @@
 require_relative '../interest'
 
-class Interest::Simple
-  # P = principal ($)                   - principal
-  # r = anuual rate (%)                 - annual_rate
-  # t = term (years)                    - term
-  # I = total interest ($)              - total_interest
-  # S = sum of principal & interest ($) - total_sum
-  # I = Prt
-  # S = P + I = P + Prt = P(I + rt)
-  # p = S / (1 + rt)
+# variables:
+# P = principal ($)                   - principal
+# r = anuual rate (%)                 - annual_rate
+# t = term (years)                    - term
+# I = total interest ($)              - total_interest
+# S = sum of principal & interest ($) - total_sum
 
+# calculations:
+# I = Prt
+# S = P + I = P + Prt = P(I + rt)
+# p = S / (1 + rt)
+
+class Interest::Simple
+
+  class NeedTotalInterestError < StandardError; end
+  
   attr_accessor :principal, :annual_rate, :term,
                 :total_interest, :total_sum
 
   def calc_total_interest
-    # TODO: make this an error raise NeedTotalInterestError, total_interest_error_message
   	return need_total_interest_components unless total_interest_variables
   	 @total_interest = @principal * annual_rate_percentage * @term
      @total_interest = @total_interest.round(2)
@@ -42,7 +47,7 @@ class Interest::Simple
   private
 
   def need_total_interest_components
-  	'Need principal, annual_rate and term'
+  	raise NeedTotalInterestError, 'Need principal, annual_rate and term'
   end
 
   def total_interest_variables
