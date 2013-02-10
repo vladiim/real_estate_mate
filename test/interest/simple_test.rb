@@ -44,4 +44,16 @@ describe Interest::Simple do
       end
     end
   end
+
+  describe '#calc_bank_discount' do
+    before do
+      @interest.total_sum    = 200
+      @interest.term_in_days = 90
+      @interest.annual_rate  = 6
+    end
+
+    it 'returns 3' do
+      @interest.calc_bank_discount.must_equal 3
+    end
+  end
 end

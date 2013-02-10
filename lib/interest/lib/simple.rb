@@ -16,8 +16,8 @@ class Interest::Simple
 
   class NeedTotalInterestError < StandardError; end
   
-  attr_accessor :principal, :annual_rate, :term,
-                :total_interest, :total_sum
+  attr_accessor :principal,      :annual_rate, :term,
+                :total_interest, :total_sum,   :term_in_days
 
   def calc_total_interest
   	return need_total_interest_components unless total_interest_variables
@@ -44,6 +44,11 @@ class Interest::Simple
     end
   end
 
+  def calc_bank_discount
+    # I = Prt
+    (@total_sum * annual_rate_percentage * term_in_years).round(1)
+  end
+
   private
 
   def need_total_interest_components
@@ -60,5 +65,9 @@ class Interest::Simple
 
   def annual_rate_percentage
     @annual_rate.round(2) / 100
+  end
+
+  def term_in_years
+    @term ? @term : @term_in_days.round(2) / 365
   end
 end
