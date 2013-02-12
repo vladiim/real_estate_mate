@@ -50,10 +50,15 @@ describe Interest::Simple do
       @interest.total_sum    = 200
       @interest.term_in_days = 90
       @interest.annual_rate  = 6
+      @interest.calc_bank_discount
     end
 
-    it 'returns 3' do
-      @interest.calc_bank_discount.must_equal 3
+    it 'sets the bank_discount as 3' do
+      @interest.bank_discount.must_equal 3
+    end
+
+    it 'sets the ammount_recieved_by_borrower as 197' do
+      @interest.ammount_recieved_by_borrower.must_equal 197
     end
   end
 end

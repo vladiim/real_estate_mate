@@ -30,6 +30,21 @@ describe Interest::Bearing do
     it 'calculates the debt_at_maturity as 807.20' do
       @interest.debt_at_maturity.must_equal 807.20
     end
+
+    describe 'without the right args' do
+      let(:variables) { ['principal', 'duration',
+          'commencement_date', 'annual_rate',
+          'discount_rate', 'discount_start', 'discount_end'] }
+
+      let(:error) { Interest::Bearing::VariableMissingError }
+
+      it 'raises an error' do
+        variables.each do |varibale|
+          @interest.send("#{varibale}=", nil)
+          lambda {@interest.calc_debt_at_maturity}.must_raise error
+        end
+      end
+    end
   end
 
   describe '#calc_face_value_of_note' do

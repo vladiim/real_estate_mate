@@ -10,12 +10,6 @@ require 'date'
 # the present value of the maturity uses the rate of discount
 # also known as discount_rate or by expression 'money is worth'
 
-# process to solving interest-beaing debt problems:
-# 1. determine the date of maturity of the note
-# 2. compute the value of the debt @ maturity
-# 3. determine the discount period
-# 4. compute the proceeds (sum received)
-
 # variables:
 # P = principal ($)                   - principal
 # r = anuual rate (%)                 - annual_rate
@@ -23,13 +17,11 @@ require 'date'
 # I = total interest ($)              - total_interest
 # S = sum of principal & interest ($) - total_sum
 
-# calculations:
-# S = P(1 + rt)
-
 class Interest::Bearing
 
-  class NeedTotalSumError  < StandardError; end
-  class NeedDiscountPeriod < StandardError; end
+  class NeedTotalSumError    < StandardError; end
+  class NeedDiscountPeriod   < StandardError; end
+  class VariableMissingError < StandardError; end
 
   attr_accessor :duration,       :commencement_date, :total_sum,
                 :annual_rate,    :date_of_maturity,  :discount_start,
@@ -38,17 +30,11 @@ class Interest::Bearing
                 :term_in_days,   :customer_proceeds
 
   def calc_debt_at_maturity
-    # 1. determine the date of maturity of the note
-  	@date_of_maturity = Date.parse(@commencement_date) + 90
-
-    # 2. compute the value of the debt @ maturity
+    missing_debt_at_maturity_error unless debt_at_maturity_variables
+  	@date_of_maturity = calc_date_of_maturity
   	@total_sum        = calc_total_sum
-
-    # 3. determine the discount period
   	@discount_period  = calc_discount_period
-
-    # 4. compute the proceeds (sum received)
-  	@debt_at_maturity = (@total_sum / ( 1 + (discount_rate_as_percentage * calc_discounted_term) )).round(2)
+  	@debt_at_maturity = calc_sum_received
   end
 
   def calc_face_value_of_note
@@ -56,15 +42,24 @@ class Interest::Bearing
     (@customer_proceeds / (1 - (annual_rate_as_percentage * term_in_years))).round(2)
   end
 
+  def calc_total_sum
+    # S = P(1 + rt)
+    total_sum_variables_error unless total_sum_variables
+    (@principal * (1 + (annual_rate_as_percentage * calc_initial_term)))
+  end
+
+  def calc_sum_received
+    (@total_sum / ( 1 + (discount_rate_as_percentage * calc_discounted_term) )).round(2)
+  end
+
   private
 
-  def calc_total_sum
-  	(raise NeedTotalSumError, "Need @annual_rate, @duration and @principal") unless total_sum_variables
-  	(@principal * (1 + (annual_rate_as_percentage * calc_initial_term)))
+  def calc_date_of_maturity
+    Date.parse(@commencement_date) + 90
   end
 
   def calc_discount_period
-  	(raise NeedDiscountPeriod, "Need @discount_start and @discount_end") unless discount_period_vaiables
+    discount_period_vaiables_error unless discount_period_vaiables
   	Date.parse(@discount_end) - Date.parse(@discount_start)
   end
 
@@ -74,6 +69,11 @@ class Interest::Bearing
 
   def discount_period_vaiables
   	@discount_start && @discount_end
+  end
+
+  def debt_at_maturity_variables
+    @principal && @duration && @commencement_date &&
+    @annual_rate && @discount_rate && @discount_start && @discount_end
   end
 
   def calc_initial_term
@@ -94,5 +94,17 @@ class Interest::Bearing
 
   def term_in_years
     @term ? @term : TimeConversions.term_in_years(@term_in_days)
+  end
+
+  def missing_debt_at_maturity_error
+    raise VariableMissingError, "Need all: @principal && @duration && @commencement_date && @annual_rate && @discount_rate && @discount_start && @discount_end"
+  end
+
+  def total_sum_variables_error
+    raise NeedTotalSumError, "Need @annual_rate, @duration and @principal"
+  end
+
+  def discount_period_vaiables_error
+    raise NeedDiscountPeriod, "Need @discount_start and @discount_end"
   end
 end

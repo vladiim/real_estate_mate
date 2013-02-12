@@ -18,12 +18,13 @@ class Interest::Simple
   class NeedTotalInterestError < StandardError; end
   
   attr_accessor :principal,      :annual_rate, :term,
-                :total_interest, :total_sum,   :term_in_days
+                :total_interest, :total_sum,   :term_in_days,
+                :bank_discount,  :ammount_recieved_by_borrower
 
   def calc_total_interest
-  	return need_total_interest_components unless total_interest_variables
-  	 @total_interest = @principal * annual_rate_percentage * @term
-     @total_interest = @total_interest.round(2)
+    total_interest_components_error unless total_interest_variables
+  	@total_interest = @principal * annual_rate_percentage * @term
+    @total_interest = @total_interest.round(2)
   end
 
   def calc_principal
@@ -41,20 +42,17 @@ class Interest::Simple
       @total_sum = @principal + calc_total_interest
 
     else
-      return need_total_interest_components
+      return total_interest_components_error
     end
   end
 
   def calc_bank_discount
     # I = Prt
-    (@total_sum * annual_rate_percentage * term_in_years).round(1)
+    @bank_discount = (@total_sum * annual_rate_percentage * term_in_years).round(1)
+    @ammount_recieved_by_borrower = @total_sum - @bank_discount
   end
 
   private
-
-  def need_total_interest_components
-  	raise NeedTotalInterestError, 'Need principal, annual_rate and term'
-  end
 
   def total_interest_variables
   	@principal && @annual_rate && @term
@@ -70,5 +68,9 @@ class Interest::Simple
 
   def term_in_years
     @term ? @term : TimeConversions.term_in_years(@term_in_days)
+  end
+
+  def total_interest_components_error
+    raise NeedTotalInterestError, 'Need principal, annual_rate and term'
   end
 end
