@@ -1,4 +1,5 @@
 require_relative '../interest'
+require_relative '../../conversions/time_conversions'
 require 'date'
 
 # named as in interest bearing loan
@@ -33,13 +34,26 @@ class Interest::Bearing
   attr_accessor :duration,       :commencement_date, :total_sum,
                 :annual_rate,    :date_of_maturity,  :discount_start,
                 :monetery_value, :principal,         :discount_end,
-                :discount_rate,  :discount_period,   :debt_at_maturity
+                :discount_rate,  :discount_period,   :debt_at_maturity,
+                :term_in_days,   :customer_proceeds
 
   def calc_debt_at_maturity
+    # 1. determine the date of maturity of the note
   	@date_of_maturity = Date.parse(@commencement_date) + 90
+
+    # 2. compute the value of the debt @ maturity
   	@total_sum        = calc_total_sum
+
+    # 3. determine the discount period
   	@discount_period  = calc_discount_period
+
+    # 4. compute the proceeds (sum received)
   	@debt_at_maturity = (@total_sum / ( 1 + (discount_rate_as_percentage * calc_discounted_term) )).round(2)
+  end
+
+  def calc_face_value_of_note
+    # return error unless right variables
+    (@customer_proceeds / (1 - (annual_rate_as_percentage * term_in_years))).round(2)
   end
 
   private
@@ -71,10 +85,14 @@ class Interest::Bearing
   end
 
   def annual_rate_as_percentage
-  	@annual_rate.round(2) / 100
+  	TimeConversions.annual_rate_percentage(@annual_rate)
   end
 
   def discount_rate_as_percentage
-  	@discount_rate.round(2) / 100
+  	TimeConversions.annual_rate_percentage(@discount_rate)
+  end
+
+  def term_in_years
+    @term ? @term : TimeConversions.term_in_years(@term_in_days)
   end
 end

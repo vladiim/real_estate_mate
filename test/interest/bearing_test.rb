@@ -31,4 +31,16 @@ describe Interest::Bearing do
       @interest.debt_at_maturity.must_equal 807.20
     end
   end
+
+  describe '#calc_face_value_of_note' do
+    before do
+      @interest.term_in_days      = 90
+      @interest.annual_rate       = 6
+      @interest.customer_proceeds = 2800
+    end
+
+    it 'is 2842.64' do
+      @interest.calc_face_value_of_note.must_equal 2842.64
+    end
+  end
 end

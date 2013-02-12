@@ -1,4 +1,5 @@
 require_relative '../interest'
+require_relative '../../conversions/time_conversions'
 
 # variables:
 # P = principal ($)                   - principal
@@ -64,10 +65,10 @@ class Interest::Simple
   end
 
   def annual_rate_percentage
-    @annual_rate.round(2) / 100
+    TimeConversions.annual_rate_percentage(@annual_rate)
   end
 
   def term_in_years
-    @term ? @term : @term_in_days.round(2) / 365
+    @term ? @term : TimeConversions.term_in_years(@term_in_days)
   end
 end
