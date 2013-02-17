@@ -67,7 +67,6 @@ describe Interest::Bearing do
       @interest.note                    = 1000
       @interest.maturity_time_in_days   = 30
       @interest.annual_rate_at_maturity = 5
-      result
     end
 
     it 'raises an error if a required variable is missing' do
@@ -78,15 +77,18 @@ describe Interest::Bearing do
     end
 
     it 'calculates the maturity_value as 1019.8' do
+      result
       @interest.maturity_value.must_equal 1019.8
     end
 
     it 'calculates the leander_discount_on_maturity_value as 12.75' do
-      @interest.leander_discount_on_maturity_value.must_equal 12.75
+      result
+      @interest.lender_discount_on_maturity_value.must_equal 12.75
     end
 
     it 'calculates the leander_proceeds_to_lendee' do
-      @interest.leander_proceeds_to_lendee.must_equal 1007.25
+      result
+      @interest.lender_proceeds_to_lendee.must_equal 1007.05
     end
   end
 end

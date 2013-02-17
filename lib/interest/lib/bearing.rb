@@ -27,7 +27,7 @@ class Interest::Bearing
                 :discount_rate,  :discount_period,   :debt_at_maturity,
                 :term_in_days,   :customer_proceeds, :annual_rate_at_maturity,
                 :note,           :maturity_value,    :maturity_time_in_days,
-                :leander_discount_on_maturity_value, :leander_proceeds_to_lendee
+                :lender_discount_on_maturity_value,  :lender_proceeds_to_lendee
 
   def calc_debt_at_maturity
     debt_at_maturity_error unless debt_at_maturity_variables
@@ -54,7 +54,8 @@ class Interest::Bearing
   def calc_discount_on_maturity
     discount_on_maturity_error unless discount_on_maturity_variables
     @maturity_value = @note + (@note * annual_rate_as_percentage * term_in_years)
-    @leander_discount_on_maturity_value = (@maturity_value * annual_rate_at_maturity_as_percentage * discount_period_in_years).round(2)
+    @lender_discount_on_maturity_value = (@maturity_value * annual_rate_at_maturity_as_percentage * discount_period_in_years).round(2)
+    @lender_proceeds_to_lendee = @maturity_value - @lender_discount_on_maturity_value
   end
 
   private
