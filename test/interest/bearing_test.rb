@@ -91,4 +91,8 @@ describe Interest::Bearing do
       @interest.lender_proceeds_to_lendee.must_equal 1007.05
     end
   end
+
+  describe '#calc_average_due_date' do
+
+  end
 end
