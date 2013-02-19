@@ -23,11 +23,11 @@ class Interest::Bearing
 
   attr_accessor :duration,       :commencement_date, :total_sum,
                 :annual_rate,    :date_of_maturity,  :discount_start,
-                :monetery_value, :principal,         :discount_end,
+                :monetery_value, :principal,         :lender_proceeds_to_lendee,
                 :discount_rate,  :discount_period,   :debt_at_maturity,
                 :term_in_days,   :customer_proceeds, :annual_rate_at_maturity,
                 :note,           :maturity_value,    :maturity_time_in_days,
-                :lender_discount_on_maturity_value,  :lender_proceeds_to_lendee
+                :lender_discount_on_maturity_value
 
   def calc_debt_at_maturity
     debt_at_maturity_error unless debt_at_maturity_variables
@@ -55,18 +55,19 @@ class Interest::Bearing
     discount_on_maturity_error unless discount_on_maturity_variables
     @maturity_value = @note + (@note * annual_rate_as_percentage * term_in_years)
     @lender_discount_on_maturity_value = (@maturity_value * annual_rate_at_maturity_as_percentage * discount_period_in_years).round(2)
-    @lender_proceeds_to_lendee = @maturity_value - @lender_discount_on_maturity_value
+    @lender_proceeds_to_lendee = @maturity_value - @lender_discount_on_maturity_value    
   end
 
   private
 
   def calc_date_of_maturity
-    Date.parse(@commencement_date) + 90
+    # this calculates duration in days
+    Date.parse(@commencement_date) + @duration
   end
 
   def calc_discount_period
     discount_period_vaiables_error unless discount_period_vaiables
-  	Date.parse(@discount_end) - Date.parse(@discount_start)
+    @date_of_maturity - Date.parse(@discount_start)
   end
 
   def total_sum_variables
@@ -74,12 +75,12 @@ class Interest::Bearing
   end
 
   def discount_period_vaiables
-  	@discount_start && @discount_end
+  	@discount_start && @date_of_maturity
   end
 
   def debt_at_maturity_variables
     @principal && @duration && @commencement_date &&
-    @annual_rate && @discount_rate && @discount_start && @discount_end
+    @annual_rate && @discount_rate && @discount_start
   end
 
   def discount_on_maturity_variables
@@ -117,7 +118,7 @@ class Interest::Bearing
   end
 
   def debt_at_maturity_error
-    raise VariableMissingError, "Need all: @principal && @duration && @commencement_date && @annual_rate && @discount_rate && @discount_start && @discount_end"
+    raise VariableMissingError, "Need all: @principal && @duration && @commencement_date && @annual_rate && @discount_rate && @discount_start"
   end
 
   def total_sum_variables_error
@@ -125,7 +126,7 @@ class Interest::Bearing
   end
 
   def discount_period_vaiables_error
-    raise VariableMissingError, "Need @discount_start and @discount_end"
+    raise VariableMissingError, "Need @discount_start && @date_of_maturity"
   end
 
   def discount_on_maturity_error

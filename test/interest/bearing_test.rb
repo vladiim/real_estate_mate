@@ -15,7 +15,7 @@ describe Interest::Bearing do
   	  @interest.annual_rate       = 7   # %
       @interest.discount_rate     = 7.5 # %
       @interest.discount_start    = '6th July 2013'
-      @interest.discount_end      = '16th August 2013'
+      # @interest.discount_end      = '16th August 2013'
       @interest.calc_debt_at_maturity
   	end
 
@@ -34,7 +34,7 @@ describe Interest::Bearing do
     describe 'without the right args' do
       let(:variables) { ['principal', 'duration',
           'commencement_date', 'annual_rate',
-          'discount_rate', 'discount_start', 'discount_end'] }
+          'discount_rate', 'discount_start'] }
 
       it 'raises an error' do
         variables.each do |varibale|
