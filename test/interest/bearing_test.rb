@@ -93,6 +93,21 @@ describe Interest::Bearing do
   end
 
   describe '#calc_average_due_date' do
+    let(:purchases) { { '30-07-2012'=> 750, 
+                        '15-08-2012'=> 400, '25-08-2012'=> 300 } }
 
+    before do
+      @interest.purchases  = purchases
+      @interest.focal_date = '30-07-2012'
+      @interest.calc_average_due_date
+    end
+
+    it 'calculates the days from focal date' do
+      @interest.days_from_focal_date.must_equal [0, 16, 26]
+    end
+
+    it 'calculates the dollar days' do
+      @interest.dollar_days.must_equal [0, 6400, 7800]
+    end
   end
 end

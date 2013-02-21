@@ -59,8 +59,11 @@ class Interest::Bearing
   # debts may be equitably discharged by a single payment
   # the payment must be equal to the face value of the sum
   # of debts
+  attr_accessor :purchases, :focal_date, :days_from_focal_date,
+                :dollar_days
   def calc_average_due_date
-    
+    @days_from_focal_date = calc_days_from_focal_date
+    @dollar_days = calc_dollar_days
   end
 
   private
@@ -97,6 +100,20 @@ class Interest::Bearing
 
   def calc_discounted_term
     (@discount_period.round(2) / 365.round(2)).round(7)
+  end
+
+  def calc_days_from_focal_date
+    @purchases.each.inject([]) do |days_from_focal_date, purchase|
+      day_from_focal = TimeConversions.to_date(purchase[0]) - TimeConversions.to_date(@focal_date)
+      days_from_focal_date << day_from_focal
+    end
+  end
+
+  def calc_dollar_days
+    @days_from_focal_date.each.with_index.inject([]) do |d_days, (day, index)|
+      key = @purchases.keys[index]
+      d_days << @purchases[key] * day
+    end
   end
 
   def total_sum_variables

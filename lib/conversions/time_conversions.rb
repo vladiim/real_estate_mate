@@ -18,6 +18,10 @@ module TimeConversions
   	end
   end
 
+  def self.to_date(date)
+    Date.strptime(date, '%d-%m-%Y')
+  end
+
   private
 
   def self.first_date_earlier?(first_date, second_date)
