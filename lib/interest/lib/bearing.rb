@@ -62,6 +62,7 @@ class Interest::Bearing
   attr_accessor :purchases, :focal_date, :days_from_focal_date,
                 :dollar_days
   def calc_average_due_date
+    average_due_date_error unless average_due_date_variables
     @days_from_focal_date = calc_days_from_focal_date
     @dollar_days = calc_dollar_days
   end
@@ -138,6 +139,10 @@ class Interest::Bearing
     @term_in_days && @annual_rate && @customer_proceeds
   end
 
+  def average_due_date_variables
+    @purchases && @focal_date
+  end
+
   def annual_rate_as_percentage
   	TimeConversions.annual_rate_percentage(@annual_rate)
   end
@@ -160,22 +165,30 @@ class Interest::Bearing
   end
 
   def debt_at_maturity_error
-    raise VariableMissingError, "Need all: @principal && @duration && @commencement_date && @annual_rate && @discount_rate && @discount_start"
+    variable_missing_error_raiser('@principal && @duration && @commencement_date && @annual_rate && @discount_rate && @discount_start')
   end
 
   def total_sum_variables_error
-    raise VariableMissingError, "Need @annual_rate, @duration and @principal"
+    variable_missing_error_raiser('@annual_rate, @duration and @principal')
   end
 
   def discount_period_vaiables_error
-    raise VariableMissingError, "Need @discount_start && @date_of_maturity"
+    variable_missing_error_raiser('@discount_start && @date_of_maturity')
   end
 
   def discount_on_maturity_error
-    raise VariableMissingError, "Need all: @term_in_days && @annual_rate && @note && @maturity_time_in_days && @annual_rate_at_maturity"
+    variable_missing_error_raiser('@term_in_days && @annual_rate && @note && @maturity_time_in_days && @annual_rate_at_maturity')
   end
 
   def face_value_of_note_error
-    raise VariableMissingError, 'Need all: @term_in_days && @annual_rate && @customer_proceeds'
+    variable_missing_error_raiser('@term_in_days && @annual_rate && @customer_proceeds')
+  end
+
+  def average_due_date_error
+    variable_missing_error_raiser('@purchases && @focal_date')
+  end
+
+  def variable_missing_error_raiser(variables)
+    raise VariableMissingError, "Need all: #{variables}"
   end
 end
