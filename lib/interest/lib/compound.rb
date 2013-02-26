@@ -19,7 +19,7 @@ class Interest::Compound
   end
 
   attr_accessor :periods, :interest_per_period, :compound_ammount
-  def calc_accumulated_sum
+  def calc_compound_ammount
     accumulated_sum_error unless accumulated_sum_variables
     @compound_ammount = (principal *
       (1 + as_percentage(interest_per_period)) **

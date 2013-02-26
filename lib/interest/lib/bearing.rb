@@ -165,27 +165,27 @@ class Interest::Bearing
   end
 
   def debt_at_maturity_error
-    variable_missing_error_raiser('@principal && @duration && @commencement_date && @annual_rate && @discount_rate && @discount_start')
+    variable_missing_error_raiser(debt_at_maturity_variables)
   end
 
   def total_sum_variables_error
-    variable_missing_error_raiser('@annual_rate, @duration and @principal')
+    variable_missing_error_raiser(total_sum_variables)
   end
 
   def discount_period_vaiables_error
-    variable_missing_error_raiser('@discount_start && @date_of_maturity')
+    variable_missing_error_raiser(discount_period_vaiables)
   end
 
   def discount_on_maturity_error
-    variable_missing_error_raiser('@term_in_days && @annual_rate && @note && @maturity_time_in_days && @annual_rate_at_maturity')
+    variable_missing_error_raiser(discount_on_maturity_variables)
   end
 
   def face_value_of_note_error
-    variable_missing_error_raiser('@term_in_days && @annual_rate && @customer_proceeds')
+    variable_missing_error_raiser(face_value_of_note_variables)
   end
 
   def average_due_date_error
-    variable_missing_error_raiser('@purchases && @focal_date')
+    variable_missing_error_raiser(average_due_date_variables)
   end
 
   def variable_missing_error_raiser(variables)

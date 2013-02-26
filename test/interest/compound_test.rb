@@ -36,7 +36,7 @@ describe Interest::Compound do
     end
   end
 
-  describe '#calc_accumulated_sum' do
+  describe '#calc_compound_ammount' do
     before do
       compound.principal = 2000
       compound.periods   = 5
@@ -44,7 +44,7 @@ describe Interest::Compound do
     end
 
     describe 'with all variables' do
-      before { compound.calc_accumulated_sum }
+      before { compound.calc_compound_ammount }
 
       it 'compound_ammount is 2262.82' do
         compound.compound_ammount.must_equal 2262.82
@@ -57,7 +57,7 @@ describe Interest::Compound do
       it 'raises an error' do
         vars.each do |var|
           compound.send("#{var}=", nil)
-          ->{ compound.calc_accumulated_sum }.must_raise error
+          ->{ compound.calc_compound_ammount }.must_raise error
         end
       end
     end
