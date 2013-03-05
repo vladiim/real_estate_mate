@@ -26,6 +26,19 @@ class Interest::Compound
       periods).round(2)
   end
 
+  attr_accessor :frequency_of_conversion, :nominal_rate_interest
+  def calc_interest_per_period
+    interest_per_period_error unless interest_per_period_variables
+    @interest_per_period = nominal_rate_interest / frequency_of_conversion
+  end
+
+  attr_accessor :periodic_rate_of_interest
+  def calc_periodic_rate_of_interest
+    periodic_rate_of_interest_error unless periodic_rate_of_interest_variables
+    calc_interest_per_period
+    @periodic_rate_of_interest = (principal * ((1 + as_percentage(interest_per_period)) ** periods)).round(2)
+  end
+
   private
 
   def calc_repayment_interest
@@ -48,12 +61,28 @@ class Interest::Compound
     principal && periods && interest_per_period
   end
 
+  def interest_per_period_variables
+    @frequency_of_conversion && @nominal_rate_interest
+  end
+
+  def periodic_rate_of_interest_variables
+    @principal && @periods && @frequency_of_conversion && @nominal_rate_interest
+  end
+
   def repayment_ammount_error
     variable_missing_error_raiser(repayment_ammount_variables)
   end
 
   def accumulated_sum_error
     variable_missing_error_raiser(accumulated_sum_variables)
+  end
+
+  def interest_per_period_error
+    variable_missing_error_raiser(interest_per_period_variables)
+  end
+
+  def periodic_rate_of_interest_error
+    variable_missing_error_raiser(periodic_rate_of_interest_variables)
   end
 
   def variable_missing_error_raiser(variables)

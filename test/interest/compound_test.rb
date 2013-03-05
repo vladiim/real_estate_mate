@@ -62,6 +62,60 @@ describe Interest::Compound do
       end
     end
   end
+
+  describe '#calc_interest_per_period' do
+    before do
+      compound.frequency_of_conversion = 2
+      compound.nominal_rate_interest   = 6
+    end
+
+    describe 'with all variables' do
+      before { compound.calc_interest_per_period }
+
+      it 'interest_per_period is 3' do
+        compound.interest_per_period.must_equal 3
+      end
+    end
+
+    describe 'variable missing' do
+      let(:vars) { %w( frequency_of_conversion nominal_rate_interest ) }
+
+      it 'raises an error' do
+        vars.each do |var|
+          compound.send("#{var}=", nil)
+          ->{ compound.calc_interest_per_period }.must_raise error
+        end
+      end
+    end
+  end
+
+  describe '#calc_periodic_rate_of_interest' do
+    before do
+      compound.principal               = 326.4
+      compound.periods                 = 20
+      compound.frequency_of_conversion = 2
+      compound.nominal_rate_interest   = 6
+    end
+
+    describe 'with all variables' do
+      before { compound.calc_periodic_rate_of_interest }
+
+      it 'interest_per_period is 3' do
+        compound.periodic_rate_of_interest.must_equal 589.51
+      end
+    end
+
+    describe 'variable missing' do
+      let(:vars) { %w( principal periods frequency_of_conversion nominal_rate_interest ) }
+
+      it 'raises an error' do
+        vars.each do |var|
+          compound.send("#{var}=", nil)
+          ->{ compound.calc_periodic_rate_of_interest }.must_raise error
+        end
+      end
+    end
+  end
 end
 
 # P = principal
