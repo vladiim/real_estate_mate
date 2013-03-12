@@ -49,6 +49,10 @@ describe Interest::Compound do
       it 'compound_ammount is 2262.82' do
         compound.compound_ammount.must_equal 2262.82
       end
+
+      it 'interest_ammount is 262.82' do
+        compound.interest_ammount.must_equal 262.82
+      end
     end
 
     describe 'variable missing' do
@@ -65,15 +69,15 @@ describe Interest::Compound do
 
   describe '#calc_interest_per_period' do
     before do
-      compound.frequency_of_conversion = 2
-      compound.nominal_rate_interest   = 6
+      compound.frequency_of_conversion = 12
+      compound.nominal_rate_interest   = 9
     end
 
     describe 'with all variables' do
       before { compound.calc_interest_per_period }
 
       it 'interest_per_period is 3' do
-        compound.interest_per_period.must_equal 3
+        compound.interest_per_period.must_equal 0.75
       end
     end
 
@@ -89,39 +93,57 @@ describe Interest::Compound do
     end
   end
 
-  describe '#calc_periodic_rate_of_interest' do
+  describe '#calc_time_required' do
     before do
-      compound.principal               = 326.4
-      compound.periods                 = 20
-      compound.frequency_of_conversion = 2
-      compound.nominal_rate_interest   = 6
+      compound.principal               = 4
+      compound.final_ammount           = 8
+      compound.interest_per_period     = 5
+      compound.frequency_of_conversion = 1
     end
 
     describe 'with all variables' do
-      before { compound.calc_periodic_rate_of_interest }
+      before { compound.calc_time_required }
 
-      it 'interest_per_period is 3' do
-        compound.periodic_rate_of_interest.must_equal 589.51
+      it 'time_required is 14.21 years' do
+        compound.time_required.must_equal 14.21
       end
     end
 
     describe 'variable missing' do
-      let(:vars) { %w( principal periods frequency_of_conversion nominal_rate_interest ) }
+      let(:vars) { %w( principal interest_per_period frequency_of_conversion final_ammount ) }
 
       it 'raises an error' do
         vars.each do |var|
           compound.send("#{var}=", nil)
-          ->{ compound.calc_periodic_rate_of_interest }.must_raise error
+          ->{ compound.calc_time_required }.must_raise error
+        end
+      end
+    end
+  end
+
+  describe '#calc_periodic_rate' do
+    before do
+      compound.frequency_of_conversion = 4
+      compound.nominal_rate_interest   = 4
+    end
+
+    describe 'with all variables' do
+      before { compound.calc_periodic_rate }
+
+      it 'periodic_rate is 4.1' do
+        compound.periodic_rate.must_equal 4.1
+      end
+    end
+
+    describe 'variable missing' do
+      let(:vars) { %w( frequency_of_conversion interest ) }
+
+      it 'raises an error' do
+        vars.each do |var|
+          compound.send("#{var}=", nil)
+          ->{ compound.calc_periodic_rate }.must_raise error
         end
       end
     end
   end
 end
-
-# P = principal
-# i = interest per period
-# I = total interest
-# n = number of interest periods
-# S = compound ammount, sum of compounded principal & interest
-# m = freq of conversion
-# j = nominal (annual) interest rate

@@ -34,3 +34,6 @@ I = Prt
 S = P + I = P + Prt = P(I + rt)
 p = S / (I + rt)
 
+## Compound Interest
+
+annual compound interest = interest is paid/added to the principal once per year otherwise converted at other regular periods, number of times it's converted p/a = frequency_of_conversion
