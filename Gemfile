@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'debugger',  '~> 1.3.0'
+gem 'debugger',  '~> 1.5.0'
 gem 'rake',      '~> 10.0.3'
 gem 'mechanize', '~> 2.5.1'
 
@@ -9,4 +9,5 @@ group :test do
   gem 'turn',     '~> 0.9.6'
   gem 'fakeweb',  '~> 1.3.0'
   gem 'rr',       '~> 1.0.4'
+  gem 'minitest-debugger', '~> 1.0.0'
 end
