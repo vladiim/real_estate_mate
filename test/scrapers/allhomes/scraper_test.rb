@@ -12,25 +12,29 @@ describe Allhomes::Scraper do
     end
   end
 
-  describe 'mechanize mock' do
-    let(:mechanize) { Object.new }
-    let(:scraper)   { Allhomes::Scraper.new(mechanize) }
+  describe '#get_pages' do
+    let(:link)   { Object.new }
+    let(:page)   { Object.new }
+    let(:result) { scraper.get_pages }
 
-    describe "#find_state_links" do
-      describe 'index has one page' do
-        let(:act_url) { 'URL' }
-        let(:act)     { OpenStruct.new allhomes_index_url: act_url }
+    before do
+      agent = scraper.agent
+      mock(site).links { [link] }
+      mock(agent).get(link) { page }
+    end
 
-        before do
-          mock(site).act { act }
-          mock(mechanize).get(anything) { OpenStruct.new links: 'ACT LINKS' }
-          scraper.find_state_links('act')
-        end
-
-        it 'sets the page to the act index page' do
-          scraper.links.must_equal 'ACT LINKS'
-        end
-      end
+    it 'returns the pages' do
+      result.must_equal [page]
     end
   end
+
+  # describe '#find_listings' do
+  #   let(:listings) { Object.new }
+
+  #   before { scraper.find_listings }
+
+  #   it 'returns the listed houses' do
+  #     scraper.listings.should eq listings
+  #   end
+  # end
 end
