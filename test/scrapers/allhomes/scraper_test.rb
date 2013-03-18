@@ -12,29 +12,29 @@ describe Allhomes::Scraper do
     end
   end
 
-  describe '#get_pages' do
-    let(:link)   { Object.new }
-    let(:page)   { Object.new }
-    let(:result) { scraper.get_pages }
+  describe '#find_listings' do
+    let(:listings) { Object.new }
+    let(:result)   { scraper.find_listings }
 
-    before do
-      agent = scraper.agent
-      mock(site).links { [link] }
-      mock(agent).get(link) { page }
-    end
+    before { mock(scraper).get_pages { MockPage.new(listings) } }
 
-    it 'returns the pages' do
-      result.must_equal [page]
+    it 'returns the listed houses' do
+      scraper.find_listings
+      scraper.listings.must_equal [listings]
     end
   end
+end
 
-  # describe '#find_listings' do
-  #   let(:listings) { Object.new }
+class MockPage
+  def initialize(listings)
+    @listings = listings
+  end
 
-  #   before { scraper.find_listings }
-
-  #   it 'returns the listed houses' do
-  #     scraper.listings.should eq listings
-  #   end
-  # end
+  def search(term)
+    if term == 'tbody'
+      [self]
+    else
+      @listings
+    end
+  end
 end
