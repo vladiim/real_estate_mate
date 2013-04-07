@@ -13,28 +13,23 @@ describe Allhomes::Scraper do
   end
 
   describe '#find_listings' do
-    let(:listings) { Object.new }
-    let(:result)   { scraper.find_listings }
+    let(:url)  { 'http://allhomes.com/aranda' }
 
-    before { mock(scraper).get_pages { MockPage.new(listings) } }
-
-    it 'returns the listed houses' do
-      scraper.find_listings
-      scraper.listings.must_equal [listings]
+    before do
+      mock(Allhomes).links { [url] }
+      page = File.read("#{Dir.pwd}/test/fixtures/aranda_index.html")
+      FakeWeb.register_uri(:get, url, body: page, content_type: 'text/html')
     end
-  end
-end
 
-class MockPage
-  def initialize(listings)
-    @listings = listings
-  end
-
-  def search(term)
-    if term == 'tbody'
-      [self]
-    else
-      @listings
+    it 'correctly finds the first listings details' do
+      scraper.find_listings
+      listing = scraper.listings[0]
+      listing.url.must_equal "http://www.allhomes.com.au/ah/act/sale-residential/25-bindaga-street-aranda-canberra/1316838381311"
+      listing.address.must_equal 'Aranda 25 Bindaga Street'
+      listing.price.must_equal 660000
+      listing.bedrooms.must_equal 3
+      listing.bathrooms.must_equal 1
+      listing.property_type.must_equal 'House'
     end
   end
 end
