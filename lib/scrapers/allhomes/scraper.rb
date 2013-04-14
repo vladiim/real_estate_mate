@@ -11,7 +11,7 @@ class Allhomes::Scraper
   def find_listings
   	pages = get_pages
   	tbody = find_listing_tables(pages)
-    store_listings(tbody)
+    format_listings(tbody)
   end
 
   private
@@ -28,7 +28,7 @@ class Allhomes::Scraper
     end
   end
 
-  def store_listings(tbody)
+  def format_listings(tbody)
   	tbody.each do |group|
   	  page_listings = group.search('tr')
       page_listings.each { |listing| create_list_item(listing) }
@@ -36,10 +36,19 @@ class Allhomes::Scraper
   end
 
   def create_list_item(listing)
-    debugger
-    list_item = OpenStruct.new
-    list_item.url     = base_url + listing.search('.listingRecordSummaryDetails a')[0].attributes['href'].value
-    list_item.address = listing.search('.listingRecordSummaryDetails a')[0].content
+    list_item               = OpenStruct.new
+    list_item.url           = base_url + listing.search('.listingRecordSummaryDetails a')[0].attributes['href'].value
+    list_item.address       = listing.search('.listingRecordSummaryDetails a')[0].content
+    list_item.price         = format_price(listing)
+    list_item.bedrooms      = listing.search('td:nth-of-type(4)').children.text.to_i
+    list_item.bathrooms     = listing.search('td:nth-of-type(5)').children.text.to_i
+    list_item.property_type = listing.search('td:nth-of-type(6)').children.text
     listings << list_item
+  end
+
+  def format_price(listing)
+    price = listing.search('td:nth-of-type(3)').children.text
+    price = price.gsub('$', '').gsub(',', '').to_i if price.match(/^\$/)
+    price
   end
 end

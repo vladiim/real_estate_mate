@@ -1,6 +1,7 @@
 # require "#{Dir.pwd}/lib/init.rb"
 
 require 'mechanize'
+require 'ostruct'
 
 def require_top_level_dir(dir)
   Dir["#{Dir.pwd}/lib/#{dir}/*.rb"].each { |f| require f }
