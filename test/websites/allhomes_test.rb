@@ -5,7 +5,7 @@ describe Allhomes do
   let(:site) { Allhomes }
 
   describe '.links' do
-    let(:act)    { OpenStruct.new suburb_links: 'ACT LINK' }
+    let(:act)    { OpenStruct.new allhomes_suburb_links: 'ACT LINK' }
     let(:result) { site.links }
 
     before { mock(site).states { [act] } }

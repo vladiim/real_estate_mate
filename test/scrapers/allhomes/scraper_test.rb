@@ -2,6 +2,7 @@ require_relative '../../test_helper'
 require_relative '../../../lib/scrapers/allhomes/scraper'
 
 describe Allhomes::Scraper do
+  module Allhomes; URL='http://www.allhomes.com.au'; end
   let(:scraper)   { Allhomes::Scraper.new }
   let(:site)      { Allhomes }
 
@@ -30,6 +31,24 @@ describe Allhomes::Scraper do
       listing.bedrooms.must_equal 3
       listing.bathrooms.must_equal 1
       listing.property_type.must_equal 'House'
+    end
+  end
+
+  describe '#save_listings' do
+    class CSV; end
+
+    it 'saves the listing to a csv document' do
+      mock(CSV).foreach(anything) { OpenStruct.new }
+      scraper.save_listings
+
+      false.should eq true
+
+      # working scrap code:
+      # CSV.open("#{Dir.pwd}/path/to/csv.csv") do |csv|
+      #   scraper.listings.each do |l|
+      #     csv << [l.url, l.address, l.price ....]
+      #   end
+      # end
     end
   end
 end
