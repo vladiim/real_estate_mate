@@ -18,7 +18,7 @@ describe Allhomes::Scraper do
 
     before do
       mock(Allhomes).links { [url] }
-      page = File.read("#{Dir.pwd}/test/fixtures/aranda_index.html")
+      page = File.read("#{Dir.pwd}/test/fixtures/allhomes/aranda_index.html")
       FakeWeb.register_uri(:get, url, body: page, content_type: 'text/html')
     end
 

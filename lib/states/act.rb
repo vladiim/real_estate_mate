@@ -1,21 +1,25 @@
+require 'mechanize'
+require_relative '../websites/allhomes'
+
 module States
   module Act
+    ALLHOMES_INDEX = 'http://www.allhomes.com.au/ah/act/sale-residential'
+
   	def self.allhomes_suburb_links
-      [ allhomes_aranda, allhomes_belconnen, allhomes_belconnen_town_centre]
+      index        = Mechanize.new.get(ALLHOMES_INDEX)
+      link_columns = index.search('.column')
+      add_link_to_urls link_columns
   	end
 
     private
 
-    def self.allhomes_aranda
-      'http://www.allhomes.com.au/ah/act/sale-residential/aranda/121461710'
+    def self.add_link_to_urls(link_columns)
+      links = link_columns.search('dd')
+      links.inject([]) { |urls, link| urls << make_allhome_url(link) }
     end
 
-    def self.allhomes_belconnen
-      'http://www.allhomes.com.au/ah/act/sale-residential/belconnen/121477710'
-    end
-
-    def self.allhomes_belconnen_town_centre
-      'http://www.allhomes.com.au/ah/act/sale-residential/belconnen-town-centre/121899710'
+    def self.make_allhome_url(link)
+      Allhomes::URL + link.search('a')[0].attributes['href'].value
     end
   end
 end
