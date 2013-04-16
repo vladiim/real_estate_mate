@@ -39,6 +39,7 @@ describe Allhomes::Scraper do
 
     it 'saves the listing to a csv document' do
       mock(CSV).foreach(anything) { OpenStruct.new }
+      scraper.listings = [OpenStruct.new(url: 'URL', address: 'ADDRESS', price: 'PRICE')]
       scraper.save_listings
 
       false.should eq true

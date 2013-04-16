@@ -2,6 +2,7 @@
 
 require 'mechanize'
 require 'ostruct'
+require 'csv'
 
 def require_top_level_dir(dir)
   Dir["#{Dir.pwd}/lib/#{dir}/*.rb"].each { |f| require f }
@@ -25,3 +26,6 @@ require_top_level_dir('states')
 
 # Require scrapers
 require_sub_level_dir('scrapers')
+
+# Require data
+require_sub_level_dir('data')

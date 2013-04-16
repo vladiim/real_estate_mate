@@ -14,6 +14,19 @@ module Allhomes
       format_listings(tbody)
     end
 
+    def save_listings
+      CSV.open("#{Dir.pwd}/lib/data/#{today}.csv", "wb") do |csv|
+        listings.each do |listing|
+          csv << [listing.url, listing.address, listing.price, listing.bedrooms, 
+                  listing.bathrooms, listing.property_type, 'allhomes']
+        end
+      end
+    end
+
+    def today
+      "#{Time.now.year}-#{Time.now.month}-#{Time.now.day}"
+    end
+
     private
 
     def get_pages
