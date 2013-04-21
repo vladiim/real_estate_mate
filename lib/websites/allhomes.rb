@@ -12,7 +12,7 @@ module Allhomes
   end
 
   def self.states
-    [act]
+    [act, nsw]
     # [act, nsw, qld, vic, tas, nt, sa]
   end
 

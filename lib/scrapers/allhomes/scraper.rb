@@ -23,10 +23,6 @@ module Allhomes
       end
     end
 
-    def today
-      "#{Time.now.year}-#{Time.now.month}-#{Time.now.day}"
-    end
-
     private
 
     def get_pages
@@ -63,6 +59,10 @@ module Allhomes
       price = listing.search('td:nth-of-type(3)').children.text
       price = price.gsub('$', '').gsub(',', '').to_i if price.match(/^\$/)
       price
+    end
+
+    def today
+      "#{Time.now.year}-#{Time.now.month}-#{Time.now.day}"
     end
   end
 end

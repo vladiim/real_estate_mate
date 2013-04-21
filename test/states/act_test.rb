@@ -1,4 +1,5 @@
 require_relative '../test_helper'
+require_relative '../../lib/states/states'
 require_relative '../../lib/states/act'
 
 describe States::Act do
