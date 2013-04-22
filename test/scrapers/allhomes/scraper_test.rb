@@ -15,6 +15,7 @@ describe Allhomes::Scraper do
 
   describe '#find_listings' do
     let(:url)  { 'http://allhomes.com/aranda' }
+    module TimeConversions; def self.today; 'TODAY'; end; end
 
     before do
       mock(Allhomes).links { [url] }
@@ -31,36 +32,7 @@ describe Allhomes::Scraper do
       listing.bedrooms.must_equal 3
       listing.bathrooms.must_equal 1
       listing.property_type.must_equal 'House'
-
-      listing.postcoe.must_equal 'NEED POSTCODE!!!'
+      listing.postcode.must_equal 2614
     end
   end
-
-  describe '#save_listings' do
-    let(:listing)  { OpenStruct.new(url: 'URL', address: 'ADDRESS', price: 'PRICE', bedrooms: 'BED', bathrooms: 'BATH', property_type: 'TYPE') }
-    let(:csv_file) { [] }
-    class CSV; end
-
-    before do
-      mock_csv
-      mock(scraper).listings { [listing] }
-    end
-
-    it 'saves the listing to a csv document' do
-      scraper.save_listings
-      csv_file.must_equal [['URL', 'ADDRESS', 'PRICE', 'BED', 'BATH', 'TYPE', 'allhomes']]
-
-      # working scrap code:
-      # CSV.open("#{Dir.pwd}/path/to/csv.csv") do |csv|
-      #   scraper.listings.each do |l|
-      #     csv << [l.url, l.address, l.price ....]
-      #   end
-      # end
-    end
-  end
-end
-
-def mock_csv
-  mock(scraper).today { 'TODAY' }
-  mock(CSV).open("#{Dir.pwd}/lib/data/TODAY.csv", 'wb') { csv_file }
 end

@@ -1,8 +1,9 @@
 require 'mechanize'
+require 'csv'
 
 module Allhomes
   class Scraper
-    attr_reader :agent, :site, :links, :base_url, :listings
+    attr_reader :agent, :site, :links, :base_url, :listings, :postcode
 
     def initialize
     	@agent, @site, @base_url, @listings = Mechanize.new, Allhomes, Allhomes::URL, []
@@ -15,12 +16,7 @@ module Allhomes
     end
 
     def save_listings
-      CSV.open("#{Dir.pwd}/lib/data/#{today}.csv", "wb") do |csv|
-        listings.each do |listing|
-          csv << [listing.url, listing.address, listing.price, listing.bedrooms, 
-                  listing.bathrooms, listing.property_type, 'allhomes']
-        end
-      end
+      DataProcessor.new(listings).save
     end
 
     private
@@ -33,6 +29,7 @@ module Allhomes
 
     def find_listing_tables(pages)
       pages.each.inject([]) do |tbodies, page|
+        @postcode = page.search('#left_container .column p').search('strong')[1].children.text.match(/\d+/)[0].to_i
     	  tbodies << page.search('tbody')
       end
     end
@@ -52,6 +49,9 @@ module Allhomes
       list_item.bedrooms      = listing.search('td:nth-of-type(4)').children.text.to_i
       list_item.bathrooms     = listing.search('td:nth-of-type(5)').children.text.to_i
       list_item.property_type = listing.search('td:nth-of-type(6)').children.text
+      list_item.from          = 'allhomes'
+      list_item.postcode      = postcode
+      list_item.date          = TimeConversions.today
       listings << list_item
     end
 
@@ -59,10 +59,6 @@ module Allhomes
       price = listing.search('td:nth-of-type(3)').children.text
       price = price.gsub('$', '').gsub(',', '').to_i if price.match(/^\$/)
       price
-    end
-
-    def today
-      "#{Time.now.year}-#{Time.now.month}-#{Time.now.day}"
     end
   end
 end
