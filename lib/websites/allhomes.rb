@@ -6,14 +6,14 @@ module Allhomes
 
   def self.links
     states.each.inject([]) do |all_links, state|
+      puts "Finding #{state} links"
       all_links << state.allhomes_suburb_links
       all_links.flatten
     end
   end
 
   def self.states
-    [act, nsw]
-    # [act, nsw, qld, vic, tas, nt, sa]
+    [act, nsw, tas, other]
   end
 
   private
@@ -44,5 +44,9 @@ module Allhomes
 
   def self.sa
   	States::Sa
+  end
+
+  def self.other
+    States::Other
   end
 end

@@ -23,13 +23,15 @@ module Allhomes
 
     def get_pages
     	site.links.each.inject([]) do |pages, link|
+        puts "Getting page #{pages.length}"
     	  pages << agent.get(link)
     	end
     end
 
     def find_listing_tables(pages)
       pages.each.inject([]) do |tbodies, page|
-        @postcode = page.search('#left_container .column p').search('strong')[1].children.text.match(/\d+/)[0].to_i
+        @postcode = find_postcode(page)
+        puts "Finding listings for #{postcode}"
     	  tbodies << page.search('tbody')
       end
     end
@@ -42,6 +44,7 @@ module Allhomes
     end
 
     def create_list_item(listing)
+      puts "Creating list item #{listings.count}"
       list_item               = OpenStruct.new
       list_item.url           = base_url + listing.search('.listingRecordSummaryDetails a')[0].attributes['href'].value
       list_item.address       = listing.search('.listingRecordSummaryDetails a')[0].content
@@ -59,6 +62,14 @@ module Allhomes
       price = listing.search('td:nth-of-type(3)').children.text
       price = price.gsub('$', '').gsub(',', '').to_i if price.match(/^\$/)
       price
+    end
+
+    def find_postcode(page)
+      begin
+        page.search('#left_container .column p').search('strong')[1].children.text.match(/\d+/)[0].to_i
+      rescue NoMethodError
+        'other'
+      end
     end
   end
 end
