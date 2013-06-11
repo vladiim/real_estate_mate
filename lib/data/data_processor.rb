@@ -6,17 +6,17 @@ class DataProcessor
   end
 
   def save
-	create_csv_file { |csv| add_listings_to csv }
+  	create_csv_file { |csv| add_listings_to csv }
   end
 
   private
 
   def create_csv_file
-  	CSV.open("#{Dir.pwd}/lib/data/stored/#{today}.csv", "wb").tap
+  	CSV.open("#{Dir.pwd}/lib/data/stored/#{today}.csv", "wb")
   end
 
   def add_listings_to(csv)
-	listings.each { |listing| add_listing_to(csv, listing) }
+	  listings.each { |listing| add_listing_to(csv, listing) }
   end
 
   def add_listing_to(csv, listing)

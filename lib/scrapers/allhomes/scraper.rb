@@ -24,8 +24,16 @@ module Allhomes
     def get_pages
     	site.links.each.inject([]) do |pages, link|
         puts "Getting page #{pages.length}"
-    	  pages << agent.get(link)
+        pages << get_page(pages.length, link)
     	end
+    end
+
+    def get_page(pages_length, link)
+      begin
+        agent.get(link)
+      rescue Exception => e
+        puts "Failed to get page number #{pages_length} because of: #{e.message}"
+      end
     end
 
     def find_listing_tables(pages)
@@ -39,8 +47,16 @@ module Allhomes
     def format_listings(tbody)
     	tbody.each do |group|
     	  page_listings = group.search('tr')
-        page_listings.each { |listing| create_list_item(listing) }
+        page_listings.each { |listing| process_list_item(listing) }
     	end	
+    end
+
+    def process_list_item(listing)
+      begin
+        create_list_item(listing)
+      rescue Exception => e
+        puts "Failed to get listing #{listing} because of: #{e.message}"
+      end
     end
 
     def create_list_item(listing)
